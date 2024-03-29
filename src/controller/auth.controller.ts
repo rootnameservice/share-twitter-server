@@ -3,7 +3,7 @@ import { AuthService } from 'src/service/auth.service';
 import { Response, Request } from 'express';
 import { getNHoursAfterDate } from 'src/utils/utils';
 
-interface AuthorizeTwitterQueryParams {
+interface TwitterCallbackQueryParams {
     code: string;
     state: string;
     path?: string;
@@ -16,16 +16,25 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Get('twitter')
   async authorizeTwitter(
-    @Query() query : AuthorizeTwitterQueryParams,
-    @Req() request : Request, 
+    @Query() query: TwitterCallbackQueryParams,
+    @Req() request: Request, 
     @Res() response: Response,
   ) {
     const {code, state, path} = query;
 
-    const callbackUrl = (request.secure) ?
-        "https://" + request.headers.host + request.path + "?path=" + encodeURIComponent(path) :
-        "http://" + request.headers.host + request.path + "?path=" + encodeURIComponent(path)
+    let suffix: string;
+    let redirectPath: string;
+    if (path == undefined) {
+      suffix = "";
+      redirectPath = process.env.APP_DOMAIN;
+    } else {
+      suffix = "?path=" + encodeURIComponent(path);
+      redirectPath = process.env.APP_DOMAIN + path;
+    }
 
+    const callbackUrl = (request.secure) ?
+        "https://" + request.headers.host + request.path + suffix :
+        "http://" + request.headers.host + request.path + suffix;
     const token = await this.authService.requestTwitterAccessToken(code, state, callbackUrl);
 
     response.cookie('accessToken', token.token.access_token, {
@@ -39,8 +48,6 @@ export class AuthController {
         domain: process.env.APP_DOMAIN,
         expires: getNHoursAfterDate(new Date(), 3),
     })
-
-    const redirectPath = process.env.APP_DOMAIN + path;
 
     return response.redirect(redirectPath);
   }

@@ -28,7 +28,7 @@ export class AuthService {
     });
 
     // require to set private code_verifier field
-    await authClient.generateAuthURL({
+    const url = await authClient.generateAuthURL({
         state,
         code_challenge: "challenge",
         code_challenge_method: "plain"
