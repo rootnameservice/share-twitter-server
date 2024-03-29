@@ -18,12 +18,12 @@ export class AuthService {
   async requestTwitterAccessToken(
     code: string,
     state: string,
-    path: string,
+    callbackUrl: string,
 ) : Promise<{token: Token}>  {
     const authClient = new auth.OAuth2User({
         client_id: process.env.CLIENT_ID as string,
         client_secret: process.env.CLIENT_SECRET as string,
-        callback: "http://127.0.0.1:3001/auth/twitter" + "?path=" + encodeURIComponent(path),
+        callback: callbackUrl,
         scopes: ["tweet.read", "tweet.write", "users.read"],
     });
 

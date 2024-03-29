@@ -16,7 +16,11 @@ import {
         const ctx = host.switchToHttp();
         const request = ctx.getRequest<Request>();
         const response = ctx.getResponse<Response>();
-    
+
+        if(request.path === "/favicon.ico") {
+            return response.end();
+        }
+        
         const statusCode =
             exception instanceof HttpException
             ? exception.getStatus()

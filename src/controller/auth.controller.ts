@@ -1,6 +1,6 @@
-import { Controller, Post, Body, Res, HttpCode, HttpStatus, Get, Query } from '@nestjs/common';
+import { Controller, Req, Body, Res, HttpCode, HttpStatus, Get, Query, Headers } from '@nestjs/common';
 import { AuthService } from 'src/service/auth.service';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { getNHoursAfterDate } from 'src/utils/utils';
 
 interface AuthorizeTwitterQueryParams {
@@ -17,11 +17,16 @@ export class AuthController {
   @Get('twitter')
   async authorizeTwitter(
     @Query() query : AuthorizeTwitterQueryParams,
+    @Req() request : Request, 
     @Res() response: Response,
   ) {
-    const { code, state, path} = query;
+    const {code, state, path} = query;
 
-    const token = await this.authService.requestTwitterAccessToken(code, state, path);
+    const callbackUrl = (request.secure) ?
+        "https://" + request.headers.host + request.path + "?path=" + encodeURIComponent(path) :
+        "http://" + request.headers.host + request.path + "?path=" + encodeURIComponent(path)
+
+    const token = await this.authService.requestTwitterAccessToken(code, state, callbackUrl);
 
     response.cookie('accessToken', token.token.access_token, {
         httpOnly: true,
