@@ -5,11 +5,13 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth.module';
 import { APP_FILTER } from '@nestjs/core';
 import { ToHttpExceptionFilter } from 'src/filter/httpException.filter';
+import { UserModule } from './users.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    AuthModule
+    AuthModule,
+    UserModule
   ],
   controllers: [AppController],
   providers: [
@@ -20,4 +22,4 @@ import { ToHttpExceptionFilter } from 'src/filter/httpException.filter';
     }
   ],
 })
-export class AppModule {}
+export class AppModule { }

@@ -6,7 +6,7 @@ import { Client } from 'twitter-api-sdk';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly appService: AppService) { }
 
   @Get()
   getHello(@Req() req: Request): string {
@@ -14,18 +14,18 @@ export class AppController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @Get('tweets')
+  @Get('tweets/:id')
   @UseGuards(AuthGuard)
   async getTweetsById(
-    @Param() param : any,
+    @Param() param: any,
     @Req() req: Request,
     @Res() res: Response
   ) {
-    const token = req['token'];
+    const token = req['token']; 
 
     const client = new Client(token);
 
-    const tweet = await client.tweets.findTweetsById(param.id);
+    const tweet = await client.tweets.findTweetById(param.id);
 
     return res.json(tweet);
   }
@@ -34,7 +34,7 @@ export class AppController {
   @Post('tweets')
   @UseGuards(AuthGuard)
   async postTweet(
-    @Body() payload : any,
+    @Body() payload: any,
     @Req() req: Request,
     @Res() res: Response
   ) {

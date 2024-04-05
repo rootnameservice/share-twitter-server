@@ -15,7 +15,7 @@ import {
       const request = context.switchToHttp().getRequest();
       const token = this.extractTokenFromHeader(request);
 
-      if(token!) {
+      if(!token) {
         throw new UnauthorizedException('invalid_access_token');
       }
 
