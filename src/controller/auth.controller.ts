@@ -27,20 +27,26 @@ export class AuthController {
     @Req() request: Request,
     @Res() response: Response,
   ) {
-    const { code, state, path, error } = query;
+    const { code, state } = query;
 
-    let suffix: string;
-    let redirectPath: string;
-    if (path == undefined) {
-      suffix = "";
-      redirectPath = process.env.APP_DOMAIN;
-    } else {
-      suffix = "?path=" + encodeURIComponent(path);
-      redirectPath = process.env.APP_DOMAIN + path;
-    }
+    const [modal, path] = state.split(".");
 
-    const callbackUrl = (request.secure ? "https://" : "http://") + request.headers.host + request.path + suffix
+    const redirectPath = process.env.APP_DOMAIN + path;
 
+    // let suffix: string;
+    // let redirectPath: string;
+    // if (path == undefined) {
+    //   suffix = "";
+    //   redirectPath = process.env.APP_DOMAIN;
+    // } else {
+    //   suffix = "?path=" + encodeURIComponent(path);
+    //   redirectPath = process.env.APP_DOMAIN + path;
+    // }
+
+    const baseUrl = process.env.NODE_ENV == "development" ? 
+      "http://127.0.0.1:3001" : "https://rns-server-billowing-morning-6833.fly.dev"
+
+    const callbackUrl = baseUrl + "/auth/twitter"
 
     const token = await this.authService.requestTwitterAccessToken(code, state, callbackUrl);
 
