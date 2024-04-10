@@ -31,17 +31,7 @@ export class AuthController {
 
     const [modal, path] = state.split(".");
 
-    const redirectPath = process.env.APP_DOMAIN + path;
-
-    // let suffix: string;
-    // let redirectPath: string;
-    // if (path == undefined) {
-    //   suffix = "";
-    //   redirectPath = process.env.APP_DOMAIN;
-    // } else {
-    //   suffix = "?path=" + encodeURIComponent(path);
-    //   redirectPath = process.env.APP_DOMAIN + path;
-    // }
+    const redirectPath = path ? process.env.APP_ENDPOINT + path : process.env.APP_ENDPOINT
 
     const baseUrl = process.env.NODE_ENV == "development" ? 
       "http://127.0.0.1:3001" : "https://rns-server-billowing-morning-6833.fly.dev"
