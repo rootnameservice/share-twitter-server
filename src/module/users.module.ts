@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { UserController } from 'src/controller/users.controller';
-import { UserService } from 'src/service/users.service';
+import { UserController } from '../controller/users.controller';
+import { UserService } from '../service/users.service';
 
 @Module({
     imports: [],

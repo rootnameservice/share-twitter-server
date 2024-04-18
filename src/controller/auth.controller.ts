@@ -1,8 +1,8 @@
 import { Controller, Req, Res, HttpCode, HttpStatus, Get, Query, Param, UseGuards } from '@nestjs/common';
-import { AuthService } from 'src/service/auth.service';
+import { AuthService } from '../service/auth.service';
 import { Response, Request } from 'express';
-import { getNHoursAfterDate } from 'src/utils/utils';
-import { AuthGuard } from 'src/gaurd/authGaurd';
+import { getNHoursAfterDate } from '../utils/utils';
+import { AuthGuard } from '../gaurd/authGaurd';
 
 interface TwitterCallbackQueryParams {
   code: string;

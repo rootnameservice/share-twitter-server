@@ -1,7 +1,7 @@
 import { Controller, Get, Req, Post, Param, Body, UseGuards, Res, HttpCode, HttpStatus } from '@nestjs/common';
 import { AppService } from '../service/app.service';
 import { Request, Response } from 'express';
-import { AuthGuard } from 'src/gaurd/authGaurd';
+import { AuthGuard } from '../gaurd/authGaurd';
 import { Client } from 'twitter-api-sdk';
 
 @Controller()

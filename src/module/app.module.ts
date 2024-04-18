@@ -4,7 +4,7 @@ import { AppService } from '../service/app.service';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth.module';
 import { APP_FILTER } from '@nestjs/core';
-import { ToHttpExceptionFilter } from 'src/filter/httpException.filter';
+import { ToHttpExceptionFilter } from '../filter/httpException.filter';
 import { UserModule } from './users.module';
 
 @Module({
