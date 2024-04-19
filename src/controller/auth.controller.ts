@@ -27,36 +27,35 @@ export class AuthController {
     @Req() request: Request,
     @Res() response: Response,
   ) {
-    const { code, state } = query;
+    try {
+      const { code, state } = query;
 
-    const [modal, path] = state.split(".");
+      if(!code) {
+        return response.redirect(process.env.APP_ENDPOINT);
+      }
 
-    const redirectPath = path ? process.env.APP_ENDPOINT + path : process.env.APP_ENDPOINT
-
-    const baseUrl = process.env.NODE_ENV == "development" ? 
-      "http://127.0.0.1:3001" : "https://rns-server-billowing-morning-6833.fly.dev"
-
-    const callbackUrl = baseUrl + "/auth/twitter"
-
-    const token = await this.authService.requestTwitterAccessToken(code, state, callbackUrl);
-
-    response.cookie('accessToken', token.token.access_token, {
-          httpOnly: true,
-          domain: process.env.APP_DOMAIN,
-          expires: getNHoursAfterDate(new Date(), 3),
-    })
-    
-    /** 
-     * Store state (twitter data) so the client will be able to know
-     * which specific path / modal will the redirect uri open
-     */
-    response.cookie('state', state, {
-        httpOnly: true,
-        domain: process.env.APP_DOMAIN,
-        expires: getNHoursAfterDate(new Date(), 3),
-    })
-
-    return response.redirect(redirectPath);
+      const [modal, path] = state.split(".");
+  
+      const redirectPath = path ? process.env.APP_ENDPOINT + path : process.env.APP_ENDPOINT
+      const baseUrl = process.env.NODE_ENV == "development" ? 
+        "http://127.0.0.1:3001" : "https://rns-server-billowing-morning-6833.fly.dev"
+  
+      const callbackUrl = baseUrl + "/auth/twitter"
+      const token = await this.authService.requestTwitterAccessToken(code, state, callbackUrl);
+  
+      response.cookie('accessToken', token.token.access_token, {
+            httpOnly: true,
+            domain: process.env.APP_DOMAIN,
+            expires: getNHoursAfterDate(new Date(), 2),
+      })
+      
+      return modal ? response.redirect(redirectPath + `?state=${modal}`) : 
+        response.redirect(redirectPath);
+  
+    } catch (e) {
+      console.log(e);
+      return response.redirect(process.env.APP_ENDPOINT);
+    }
   }
 
   @HttpCode(HttpStatus.OK)
