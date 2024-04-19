@@ -8,7 +8,6 @@ export class UserController {
     constructor(private readonly userService: UserService) { }
 
     @HttpCode(HttpStatus.OK)
-    @UseGuards(AuthGuard)
     @Get('me')
     async getCurrentUser(
         @Req() req: Request,
@@ -16,6 +15,9 @@ export class UserController {
     ) {
         const token = req['token'];
 
+        if(!token) {
+            return res.json({ isSuccess: false});
+        }
         const user = await this.userService.requestCurrentUser(token)
 
         return res.json({ isSuccess: true, ...user });
