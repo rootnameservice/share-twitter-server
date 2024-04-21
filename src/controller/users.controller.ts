@@ -13,7 +13,7 @@ export class UserController {
         @Req() req: Request,
         @Res() res: Response,
     ) {
-        const token = req['token'];
+        const token =  req.cookies['accessToken'];
 
         if(!token) {
             return res.json({ isSuccess: false});
