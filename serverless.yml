@@ -1,14 +1,24 @@
 service: rns-server
+	
+useDotenv: true
 
 provider:
   name: aws
   runtime: nodejs18.x
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'ap-northeast-1'}
+  environment:
+    NODE_ENV: ${env:NODE_ENV}
+    CLIENT_ID: ${env:CLIENT_ID}
+    CLIENT_SECRET: ${env:CLIENT_SECRET}
+    APP_DOMAIN: ${env:APP_DOMAIN}
+    APP_ENDPOINT: ${env:APP_ENDPOINT}
+
   
 plugins:
   - serverless-plugin-typescript
   - serverless-offline
+  - serverless-domain-manager
 
 functions:
   api:
@@ -16,3 +26,17 @@ functions:
     events:
       - httpApi: '*'
     timeout: 30
+
+custom:
+  domains:
+    prod: api.rootnameservice.com
+
+  customDomain:
+    basePath: ''
+    domainName: ${self:custom.domains.${self:provider.stage}}
+    securityPolicy: tls_1_2
+    certificateName: '*.rootnameservice.com'
+    stage: '$default'
+    createRoute53Record: true
+    endpointType: REGIONAL
+    apiType: http
