@@ -38,7 +38,7 @@ export class AuthController {
   
       const redirectPath = path ? process.env.APP_ENDPOINT + path : process.env.APP_ENDPOINT
       const baseUrl = process.env.NODE_ENV == "development" ? 
-        "http://127.0.0.1:3001" : "https://rns-server-billowing-morning-6833.fly.dev"
+        "http://127.0.0.1:3001" : "https://api.rootnameservice.com"
   
       const callbackUrl = baseUrl + "/auth/twitter"
       const token = await this.authService.requestTwitterAccessToken(code, state, callbackUrl);
