@@ -24,7 +24,6 @@ export class AuthController {
   @Get('twitter')
   async authorizeTwitter(
     @Query() query: TwitterCallbackQueryParams,
-    @Req() request: Request,
     @Res() response: Response,
   ) {
     try {
@@ -77,6 +76,12 @@ export class AuthController {
     const redirectPath: string = redirect_uri;
 
     const newToken = await this.authService.requestNewToken(token, state, redirectPath)
+
+    res.cookie('accessToken', newToken.token.access_token, {
+      httpOnly: true,
+      domain: process.env.APP_DOMAIN,
+      expires: getNHoursAfterDate(new Date(), 2),
+    })
 
     return res.json({ isSuccess: true, ...newToken, state });
   }
