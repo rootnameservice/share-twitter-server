@@ -30,6 +30,7 @@ functions:
 custom:
   domains:
     prod: api.rootnameservice.com
+    dev: api.rootnameservice.com
 
   customDomain:
     basePath: ''
