@@ -29,28 +29,29 @@ export class AuthController {
     try {
       const { code, state } = query;
 
-      if(!code) {
+      if (!code) {
         return response.redirect(process.env.APP_ENDPOINT);
       }
 
       const [modal, path] = state.split(".");
-  
+
       const redirectPath = path ? process.env.APP_ENDPOINT + path : process.env.APP_ENDPOINT
-      const baseUrl = process.env.NODE_ENV == "development" ? 
-        "http://127.0.0.1:3001" : "https://api.rootnameservice.com"
-  
+      const baseUrl = process.env.NODE_ENV == "development"
+        ? "http://127.0.0.1:3001"
+        : process.env.SERVER_PROD_ENDPOINT
+
       const callbackUrl = baseUrl + "/auth/twitter"
       const token = await this.authService.requestTwitterAccessToken(code, state, callbackUrl);
-  
+
       response.cookie('accessToken', token.token.access_token, {
-            httpOnly: true,
-            domain: process.env.APP_DOMAIN,
-            expires: getNHoursAfterDate(new Date(), 2),
+        httpOnly: true,
+        domain: process.env.APP_DOMAIN,
+        expires: getNHoursAfterDate(new Date(), 2),
       })
-      
-      return modal ? response.redirect(redirectPath + `?state=${modal}`) : 
+
+      return modal ? response.redirect(redirectPath + `?state=${modal}`) :
         response.redirect(redirectPath);
-  
+
     } catch (e) {
       console.log(e);
       return response.redirect(process.env.APP_ENDPOINT);
